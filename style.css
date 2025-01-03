@@ -33,6 +33,7 @@ h1 {
     justify-content: center;
     gap: 20px;
     z-index: 10;
+    margin-bottom: 20px;
 }
 
 button {
@@ -43,6 +44,7 @@ button {
     color: white;
     border: none;
     border-radius: 5px;
+    user-select: none; /* Prevent text selection */
 }
 
 button:hover {
@@ -101,6 +103,7 @@ button:hover {
     bottom: 20px;
     left: 50%;
     z-index: 10;
+    transform: translateX(-50%); /* Center the bow and arrow horizontally */
 }
 
 #bowAndArrowImg {
@@ -109,17 +112,54 @@ button:hover {
     left: 0; /* Fix left alignment to 0 */
 }
 
+#moveLeft, #moveRight {
+    padding: 5px 25px;
+    font-size: 20px;
+    background-color: #ef3468;
+    border-radius: 5px;
+    user-select: none; /* Prevent text selection */
+}
+
+#moveLeft:before {
+    content: '←'; /* Left arrow symbol */
+    font-size: 30px;
+}
+
+#moveRight:before {
+    content: '→'; /* Right arrow symbol */
+    font-size: 30px;
+}
+
 /* Responsive Design */
+@media (max-width: 768px) {
+    button {
+        padding: 12px 25px;
+        font-size: 18px;
+    }
+
+    #controls {
+        gap: 15px;
+    }
+}
+
 @media (max-width: 600px) {
     button {
-        padding: 15px 30px;
-        font-size: 20px;
+        padding: 12px 25px;
+        font-size: 18px;
+    }
+    
+    #score, #timer {
+        font-size: 18px;
     }
 }
 
 @media (max-width: 400px) {
     button {
-        padding: 12px 25px;
-        font-size: 18px;
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+
+    #score, #timer {
+        font-size: 16px;
     }
 }
