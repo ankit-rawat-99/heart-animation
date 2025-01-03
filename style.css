@@ -25,14 +25,14 @@ h1 {
     color: #fff;
 }
 
-#nameInput {
-    padding: 10px;
-    font-size: 16px;
-    margin: 10px 0;
-    width: 250px;
-    border-radius: 5px;
-    border: 2px solid #ccc;
-    text-align: center;
+#controls {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    z-index: 10;
 }
 
 button {
@@ -107,4 +107,19 @@ button:hover {
     position: absolute;
     bottom: 0;
     left: 0; /* Fix left alignment to 0 */
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    button {
+        padding: 15px 30px;
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 400px) {
+    button {
+        padding: 12px 25px;
+        font-size: 18px;
+    }
 }
