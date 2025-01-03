@@ -1,5 +1,3 @@
-/* style.css */
-
 body {
     background: url('background1.jpg') no-repeat center center fixed;
     background-size: cover;
@@ -13,21 +11,24 @@ body {
     flex-direction: column;
 }
 
-
 .container {
     text-align: center;
+    position: absolute;
+    top: 10%;
+    width: 100%;
+    z-index: 10;
 }
 
 h1 {
     font-size: 24px;
     margin-bottom: 10px;
-    color: #333;
+    color: #fff;
 }
 
 #nameInput {
     padding: 10px;
     font-size: 16px;
-    margin: 20px 0;
+    margin: 10px 0;
     width: 250px;
     border-radius: 5px;
     border: 2px solid #ccc;
@@ -48,6 +49,26 @@ button:hover {
     background-color: #ff3b57;
 }
 
+#score {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 24px;
+    color: white;
+    z-index: 10;
+    display: none; /* Initially hidden */
+}
+
+#timer {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 24px;
+    color: white;
+    z-index: 10;
+    display: none; /* Initially hidden */
+}
+
 #heartContainer {
     position: relative;
     width: 100%;
@@ -59,20 +80,31 @@ button:hover {
     position: absolute;
     font-size: 24px;
     color: red;
-    animation: fall 5s ease-in forwards; /* Falling animation */
-    opacity: 0;
-    animation-delay: 0.5s; /* Delayed for a smoother effect */
+    animation: fall 4s linear forwards;
 }
 
 @keyframes fall {
     0% {
-        top: -50px; /* Start just above the screen */
+        top: -50px;
         opacity: 1;
-        transform: scale(0);
+        transform: scale(0.5);
     }
     100% {
-        top: 100vh; /* End after going off the screen at the bottom */
-        opacity: 0;
+        top: 100vh;
+        opacity: 1;
         transform: scale(1);
     }
+}
+
+#bowAndArrow {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    z-index: 10;
+}
+
+#bowAndArrowImg {
+    position: absolute;
+    bottom: 0;
+    left: 0; /* Fix left alignment to 0 */
 }
