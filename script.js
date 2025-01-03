@@ -3,6 +3,10 @@ let gameStarted = false;
 let boyPosition = window.innerWidth / 2; // Start in the middle of the screen
 let gameTime = 30; // Game duration in seconds
 let timerInterval;
+let touchStartX = 0;
+let touchMoveX = 0;
+let isTouching = false;
+let moveInterval = null; // For holding down the buttons
 
 // Start the game when the button is clicked
 document.getElementById('startButton').addEventListener('click', function () {
@@ -26,9 +30,38 @@ function startGame(name) {
     }, 1000);
 
     startTimer(heartInterval);
-    window.addEventListener('keydown', moveBoy);
+    window.addEventListener('keydown', moveBoyWithKeyboard);
+
+    // Add touch event listeners for mobile control
+    const bowContainer = document.getElementById('bowAndArrow');
+    bowContainer.addEventListener('touchstart', onTouchStart, { passive: false });
+    bowContainer.addEventListener('touchmove', onTouchMove, { passive: false });
+    bowContainer.addEventListener('touchend', onTouchEnd, { passive: false });
 }
 
+// Handle touch start
+function onTouchStart(event) {
+    event.preventDefault(); // Prevent default touch behavior
+    touchStartX = event.touches[0].clientX; // Record starting touch position
+    isTouching = true;
+}
+
+// Handle touch move
+function onTouchMove(event) {
+    if (isTouching) {
+        event.preventDefault(); // Prevent default touch behavior
+        touchMoveX = event.touches[0].clientX; // Record current touch position
+        moveBoy(touchMoveX);
+    }
+}
+
+// Handle touch end
+function onTouchEnd() {
+    isTouching = false;
+    clearInterval(moveInterval); // Stop moving when touch ends
+}
+
+// Create falling hearts
 function createHeart(name) {
     const heartContainer = document.getElementById('heartContainer');
 
@@ -49,6 +82,7 @@ function createHeart(name) {
     checkCollision(heart);
 }
 
+// Collision detection
 function checkCollision(heart) {
     const interval = setInterval(() => {
         const heartRect = heart.getBoundingClientRect();
@@ -67,7 +101,60 @@ function checkCollision(heart) {
     }, 50); // Improved collision detection frequency
 }
 
-function moveBoy(event) {
+// Move boy with button controls (Move Left and Move Right)
+document.getElementById('moveLeft').addEventListener('mousedown', () => {
+    startMoving('left');
+});
+
+document.getElementById('moveRight').addEventListener('mousedown', () => {
+    startMoving('right');
+});
+
+document.getElementById('moveLeft').addEventListener('mouseup', stopMoving);
+document.getElementById('moveRight').addEventListener('mouseup', stopMoving);
+
+document.getElementById('moveLeft').addEventListener('touchstart', () => {
+    startMoving('left');
+});
+
+document.getElementById('moveRight').addEventListener('touchstart', () => {
+    startMoving('right');
+});
+
+document.getElementById('moveLeft').addEventListener('touchend', stopMoving);
+document.getElementById('moveRight').addEventListener('touchend', stopMoving);
+
+// Start moving the character in a direction (left or right)
+function startMoving(direction) {
+    if (moveInterval) clearInterval(moveInterval); // Clear any previous intervals before starting a new one
+
+    moveInterval = setInterval(() => {
+        if (direction === 'left') {
+            boyPosition -= 10;
+            if (boyPosition < 0) boyPosition = 0;
+        } else if (direction === 'right') {
+            boyPosition += 10;
+            const boyWidth = document.getElementById('bowAndArrowImg').offsetWidth;
+            const screenWidth = window.innerWidth;
+            if (boyPosition > screenWidth - boyWidth) boyPosition = screenWidth - boyWidth;
+        }
+        updateBoyPosition();
+    }, 50); // Move every 50ms while the button is held
+}
+
+// Stop moving when mouse/touch is released
+function stopMoving() {
+    clearInterval(moveInterval);
+}
+
+// Update the boy's position on the screen
+function updateBoyPosition() {
+    const bowContainer = document.getElementById('bowAndArrow');
+    bowContainer.style.left = `${boyPosition}px`;
+}
+
+// Move boy with keyboard (ArrowLeft and ArrowRight)
+function moveBoyWithKeyboard(event) {
     const boy = document.getElementById('bowAndArrowImg');
     const boyWidth = boy.offsetWidth;
     const screenWidth = window.innerWidth;
@@ -85,7 +172,7 @@ function moveBoy(event) {
     bowContainer.style.left = `${boyPosition}px`;
 }
 
-
+// Start the game timer
 function startTimer(heartInterval) {
     const timer = document.getElementById('timer');
     timer.innerText = `Time Left: ${gameTime}s`;
@@ -102,10 +189,11 @@ function startTimer(heartInterval) {
     }, 1000);
 }
 
+// End game function
 function endGame() {
     gameStarted = false;
 
-    window.removeEventListener('keydown', moveBoy);
+    window.removeEventListener('keydown', moveBoyWithKeyboard);
     alert(`Game Over! Your final score is ${score}`);
     location.reload();
 }
