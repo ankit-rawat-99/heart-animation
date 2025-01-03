@@ -1,39 +1,111 @@
-// script.js
+let score = 0;
+let gameStarted = false;
+let boyPosition = window.innerWidth / 2; // Start in the middle of the screen
+let gameTime = 30; // Game duration in seconds
+let timerInterval;
 
-document.getElementById('startButton').addEventListener('click', function() {
+// Start the game when the button is clicked
+document.getElementById('startButton').addEventListener('click', function () {
     const name = document.getElementById('nameInput').value;
-    
+
     if (name) {
-        // Create 10 hearts when the name is entered
-        for (let i = 0; i < 10; i++) {
-            createHeart(name);
-        }
+        gameStarted = true;
+        document.getElementById('score').style.display = 'block';
+        document.getElementById('timer').style.display = 'block';
+        startGame(name);
     }
 });
 
+function startGame(name) {
+    document.querySelector('.container').style.display = 'none';
+
+    const heartInterval = setInterval(() => {
+        if (gameStarted) {
+            createHeart(name);
+        }
+    }, 1000);
+
+    startTimer(heartInterval);
+    window.addEventListener('keydown', moveBoy);
+}
+
 function createHeart(name) {
     const heartContainer = document.getElementById('heartContainer');
-    
+
     const heart = document.createElement('div');
     heart.classList.add('heart');
-    heart.innerHTML = `❤️ ${name} ❤️`;  // Heart with the name inside
+    heart.innerHTML = `❤️ ${name} ❤️`;
 
-    // Randomize the starting horizontal position of the heart
-    const randomX = Math.random() * window.innerWidth; // Random X position across the screen
-    const randomDelay = Math.random() * 1; // Randomize delay for each heart
-    const randomSize = Math.random() * (30 - 20) + 20; // Randomize heart size
-    const randomDuration = Math.random() * (7 - 4) + 4; // Randomize fall duration between 4 and 7 seconds
-
-    // Apply randomized position and size
+    const randomX = Math.random() * (window.innerWidth - 50); // Avoid overflow
     heart.style.left = `${randomX}px`;
-    heart.style.fontSize = `${randomSize}px`;
-    heart.style.animationDelay = `${randomDelay}s`; // Random delay before animation starts
-    heart.style.animationDuration = `${randomDuration}s`; // Randomize animation duration
+    heart.style.animationDuration = '4s';
 
     heartContainer.appendChild(heart);
 
-    // Remove the heart after the animation completes (max 7 seconds)
     setTimeout(() => {
         heart.remove();
-    }, randomDuration * 1000);  // Match the randomized duration
+    }, 4200); // Ensure it's slightly longer than animation duration
+
+    checkCollision(heart);
+}
+
+function checkCollision(heart) {
+    const interval = setInterval(() => {
+        const heartRect = heart.getBoundingClientRect();
+        const boyRect = document.getElementById('bowAndArrowImg').getBoundingClientRect();
+
+        if (
+            heartRect.top + heartRect.height > boyRect.top &&
+            heartRect.left + heartRect.width > boyRect.left &&
+            heartRect.left < boyRect.left + boyRect.width
+        ) {
+            score++;
+            document.getElementById('score').innerText = `Score: ${score}`;
+            heart.remove();
+            clearInterval(interval);
+        }
+    }, 50); // Improved collision detection frequency
+}
+
+function moveBoy(event) {
+    const boy = document.getElementById('bowAndArrowImg');
+    const boyWidth = boy.offsetWidth;
+    const screenWidth = window.innerWidth;
+
+    if (event.key === 'ArrowLeft') {
+        boyPosition -= 10;
+        if (boyPosition < 0) boyPosition = 0;
+    } else if (event.key === 'ArrowRight') {
+        boyPosition += 10;
+        if (boyPosition > screenWidth - boyWidth) boyPosition = screenWidth - boyWidth;
+    }
+
+    // Update the position with respect to the parent container's left position
+    const bowContainer = document.getElementById('bowAndArrow');
+    bowContainer.style.left = `${boyPosition}px`;
+}
+
+
+function startTimer(heartInterval) {
+    const timer = document.getElementById('timer');
+    timer.innerText = `Time Left: ${gameTime}s`;
+
+    timerInterval = setInterval(() => {
+        gameTime--;
+        timer.innerText = `Time Left: ${gameTime}s`;
+
+        if (gameTime === 0) {
+            clearInterval(timerInterval);
+            clearInterval(heartInterval);
+            endGame();
+        }
+    }, 1000);
+}
+
+function endGame() {
+    gameStarted = false;
+
+    window.removeEventListener('keydown', moveBoy);
+    alert(`Game Over! Your final score is ${score}`);
+    location.reload();
 }
