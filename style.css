@@ -31,13 +31,13 @@ h1 {
     width: 100%;
     display: flex;
     justify-content: center;
-    gap: 30px; /* Increased space between buttons */
+    gap: 40px; /* Increase space between buttons */
     z-index: 10;
     margin-bottom: 20px;
 }
 
 button {
-    padding: 10px 20px;
+    padding: 12px 30px; /* Adjusted padding for larger buttons */
     font-size: 16px;
     cursor: pointer;
     background-color: #ff6b81;
@@ -133,18 +133,18 @@ button:hover {
 /* Responsive Design */
 @media (max-width: 768px) {
     button {
-        padding: 12px 25px;
+        padding: 14px 30px;
         font-size: 18px;
     }
 
     #controls {
-        gap: 40px; /* Increased space for smaller screens */
+        gap: 50px; /* Increased space between buttons */
     }
 }
 
 @media (max-width: 600px) {
     button {
-        padding: 14px 28px; /* Adjust button padding for better touch target size */
+        padding: 14px 30px; /* Adjust button padding for better touch target size */
         font-size: 18px;
     }
     
@@ -153,13 +153,13 @@ button:hover {
     }
 
     #controls {
-        gap: 45px; /* Further increase gap for smaller screens */
+        gap: 60px; /* Further increase gap for smaller screens */
     }
 }
 
 @media (max-width: 400px) {
     button {
-        padding: 12px 22px; /* Adjust button padding for very small screens */
+        padding: 14px 32px; /* Adjust button padding for very small screens */
         font-size: 16px;
     }
 
@@ -168,6 +168,6 @@ button:hover {
     }
 
     #controls {
-        gap: 50px; /* Add more space between buttons for very small screens */
+        gap: 70px; /* Add more space between buttons for very small screens */
     }
 }
